@@ -1,0 +1,97 @@
+Starting project at /Users/hemanthpediredla/Desktop/No Name Company/glidemoney/glidemoney
+Starting Metro Bundler
+warning: Bundler cache is empty, rebuilding (this may take a minute)
+Waiting on http://localhost:8081
+Logs for your project will appear below.
+iOS ./index.ts ░░░░░░░░░░░░░░░░  0.0% (0/1)
+iOS ./index.ts ▓▓▓▓▓▓▓▓▓▓▓░░░░░ 70.4% (828/993)
+iOS Bundled 5579ms index.ts (1279 modules)
+ WARN  [2025-09-04T03:02:37.179Z]  @firebase/auth: Auth (12.2.0): 
+You are initializing Firebase Auth for React Native without providing
+AsyncStorage. Auth state will default to memory persistence and will not
+persist between sessions. In order to persist auth state, install the package
+"@react-native-async-storage/async-storage" and provide it to
+initializeAuth:
+
+import { initializeAuth, getReactNativePersistence } from 'firebase/auth';
+import ReactNativeAsyncStorage from '@react-native-async-storage/async-storage';
+const auth = initializeAuth(app, {
+  persistence: getReactNativePersistence(ReactNativeAsyncStorage)
+});
+ LOG  Attempting authentication... {"email": "test002@email.com", "isSignUp": false}
+ LOG  Sign in successful: b1OORb8UvzX4Qc7hv5AO8yzWgXP2
+ LOG  [analytics] setaside_reco_seen {}
+ ERROR  Error getting recurring bills: [FirebaseError: The query requires an index. You can create it here: https://console.firebase.google.com/v1/r/project/glidemoney/firestore/indexes?create_composite=ClFwcm9qZWN0cy9nbGlkZW1vbmV5L2RhdGFiYXNlcy8oZGVmYXVsdCkvY29sbGVjdGlvbkdyb3Vwcy9yZWN1cnJpbmdCaWxscy9pbmRleGVzL18QARoMCghpc0FjdGl2ZRABGgoKBnVzZXJJZBABGgsKB2R1ZURhdGUQARoMCghfX25hbWVfXxAB]
+ LOG  [analytics] setaside_reco_seen {}
+ ERROR  Error getting recurring bills: [FirebaseError: The query requires an index. You can create it here: https://console.firebase.google.com/v1/r/project/glidemoney/firestore/indexes?create_composite=ClFwcm9qZWN0cy9nbGlkZW1vbmV5L2RhdGFiYXNlcy8oZGVmYXVsdCkvY29sbGVjdGlvbkdyb3Vwcy9yZWN1cnJpbmdCaWxscy9pbmRleGVzL18QARoMCghpc0FjdGl2ZRABGgoKBnVzZXJJZBABGgsKB2R1ZURhdGUQARoMCghfX25hbWVfXxAB]
+iOS ./index.ts ░░░░░░░░░░░░░░░░  0.0% (0/1)
+iOS Bundled 82ms index.ts (1 module)
+ WARN  [2025-09-04T04:05:04.489Z]  @firebase/auth: Auth (12.2.0): 
+You are initializing Firebase Auth for React Native without providing
+AsyncStorage. Auth state will default to memory persistence and will not
+persist between sessions. In order to persist auth state, install the package
+"@react-native-async-storage/async-storage" and provide it to
+initializeAuth:
+
+import { initializeAuth, getReactNativePersistence } from 'firebase/auth';
+import ReactNativeAsyncStorage from '@react-native-async-storage/async-storage';
+const auth = initializeAuth(app, {
+  persistence: getReactNativePersistence(ReactNativeAsyncStorage)
+});
+ LOG  Attempting authentication... {"email": "test002@email.com", "isSignUp": false}
+ LOG  Sign in successful: b1OORb8UvzX4Qc7hv5AO8yzWgXP2
+ LOG  [analytics] setaside_reco_seen {}
+ ERROR  Error getting recurring bills: [FirebaseError: The query requires an index. You can create it here: https://console.firebase.google.com/v1/r/project/glidemoney/firestore/indexes?create_composite=ClFwcm9qZWN0cy9nbGlkZW1vbmV5L2RhdGFiYXNlcy8oZGVmYXVsdCkvY29sbGVjdGlvbkdyb3Vwcy9yZWN1cnJpbmdCaWxscy9pbmRleGVzL18QARoMCghpc0FjdGl2ZRABGgoKBnVzZXJJZBABGgsKB2R1ZURhdGUQARoMCghfX25hbWVfXxAB]
+ LOG  [analytics] setaside_reco_seen {}
+ ERROR  Error getting recurring bills: [FirebaseError: The query requires an index. You can create it here: https://console.firebase.google.com/v1/r/project/glidemoney/firestore/indexes?create_composite=ClFwcm9qZWN0cy9nbGlkZW1vbmV5L2RhdGFiYXNlcy8oZGVmYXVsdCkvY29sbGVjdGlvbkdyb3Vwcy9yZWN1cnJpbmdCaWxscy9pbmRleGVzL18QARoMCghpc0FjdGl2ZRABGgoKBnVzZXJJZBABGgsKB2R1ZURhdGUQARoMCghfX25hbWVfXxAB]
+ LOG  [analytics] setaside_reco_seen {}
+ ERROR  Error getting recurring bills: [FirebaseError: The query requires an index. You can create it here: https://console.firebase.google.com/v1/r/project/glidemoney/firestore/indexes?create_composite=ClFwcm9qZWN0cy9nbGlkZW1vbmV5L2RhdGFiYXNlcy8oZGVmYXVsdCkvY29sbGVjdGlvbkdyb3Vwcy9yZWN1cnJpbmdCaWxscy9pbmRleGVzL18QARoMCghpc0FjdGl2ZRABGgoKBnVzZXJJZBABGgsKB2R1ZURhdGUQARoMCghfX25hbWVfXxAB]
+ LOG  [analytics] setaside_reco_seen {}
+ ERROR  Error getting recurring bills: [FirebaseError: The query requires an index. You can create it here: https://console.firebase.google.com/v1/r/project/glidemoney/firestore/indexes?create_composite=ClFwcm9qZWN0cy9nbGlkZW1vbmV5L2RhdGFiYXNlcy8oZGVmYXVsdCkvY29sbGVjdGlvbkdyb3Vwcy9yZWN1cnJpbmdCaWxscy9pbmRleGVzL18QARoMCghpc0FjdGl2ZRABGgoKBnVzZXJJZBABGgsKB2R1ZURhdGUQARoMCghfX25hbWVfXxAB]
+ LOG  [analytics] setaside_reco_seen {}
+ ERROR  Error getting recurring bills: [FirebaseError: The query requires an index. You can create it here: https://console.firebase.google.com/v1/r/project/glidemoney/firestore/indexes?create_composite=ClFwcm9qZWN0cy9nbGlkZW1vbmV5L2RhdGFiYXNlcy8oZGVmYXVsdCkvY29sbGVjdGlvbkdyb3Vwcy9yZWN1cnJpbmdCaWxscy9pbmRleGVzL18QARoMCghpc0FjdGl2ZRABGgoKBnVzZXJJZBABGgsKB2R1ZURhdGUQARoMCghfX25hbWVfXxAB]
+ LOG  [analytics] setaside_reco_seen {}
+ ERROR  Error getting recurring bills: [FirebaseError: The query requires an index. You can create it here: https://console.firebase.google.com/v1/r/project/glidemoney/firestore/indexes?create_composite=ClFwcm9qZWN0cy9nbGlkZW1vbmV5L2RhdGFiYXNlcy8oZGVmYXVsdCkvY29sbGVjdGlvbkdyb3Vwcy9yZWN1cnJpbmdCaWxscy9pbmRleGVzL18QARoMCghpc0FjdGl2ZRABGgoKBnVzZXJJZBABGgsKB2R1ZURhdGUQARoMCghfX25hbWVfXxAB]
+ LOG  [analytics] setaside_reco_seen {}
+ ERROR  Error getting recurring bills: [FirebaseError: The query requires an index. You can create it here: https://console.firebase.google.com/v1/r/project/glidemoney/firestore/indexes?create_composite=ClFwcm9qZWN0cy9nbGlkZW1vbmV5L2RhdGFiYXNlcy8oZGVmYXVsdCkvY29sbGVjdGlvbkdyb3Vwcy9yZWN1cnJpbmdCaWxscy9pbmRleGVzL18QARoMCghpc0FjdGl2ZRABGgoKBnVzZXJJZBABGgsKB2R1ZURhdGUQARoMCghfX25hbWVfXxAB]
+ LOG  [analytics] setaside_reco_seen {}
+ ERROR  Error getting recurring bills: [FirebaseError: The query requires an index. You can create it here: https://console.firebase.google.com/v1/r/project/glidemoney/firestore/indexes?create_composite=ClFwcm9qZWN0cy9nbGlkZW1vbmV5L2RhdGFiYXNlcy8oZGVmYXVsdCkvY29sbGVjdGlvbkdyb3Vwcy9yZWN1cnJpbmdCaWxscy9pbmRleGVzL18QARoMCghpc0FjdGl2ZRABGgoKBnVzZXJJZBABGgsKB2R1ZURhdGUQARoMCghfX25hbWVfXxAB]
+ LOG  [analytics] setaside_mark_saved {"amount": 60.99519230769231}
+iOS ./index.ts ░░░░░░░░░░░░░░░░  0.0% (0/1)
+iOS Bundled 334ms index.ts (1 module)
+ WARN  [2025-09-04T05:21:04.933Z]  @firebase/auth: Auth (12.2.0): 
+You are initializing Firebase Auth for React Native without providing
+AsyncStorage. Auth state will default to memory persistence and will not
+persist between sessions. In order to persist auth state, install the package
+"@react-native-async-storage/async-storage" and provide it to
+initializeAuth:
+
+import { initializeAuth, getReactNativePersistence } from 'firebase/auth';
+import ReactNativeAsyncStorage from '@react-native-async-storage/async-storage';
+const auth = initializeAuth(app, {
+  persistence: getReactNativePersistence(ReactNativeAsyncStorage)
+});
+ LOG  Attempting authentication... {"email": "test002@email.com", "isSignUp": false}
+ LOG  Sign in successful: b1OORb8UvzX4Qc7hv5AO8yzWgXP2
+ LOG  [analytics] setaside_reco_seen {}
+ ERROR  Error getting recurring bills: [FirebaseError: The query requires an index. You can create it here: https://console.firebase.google.com/v1/r/project/glidemoney/firestore/indexes?create_composite=ClFwcm9qZWN0cy9nbGlkZW1vbmV5L2RhdGFiYXNlcy8oZGVmYXVsdCkvY29sbGVjdGlvbkdyb3Vwcy9yZWN1cnJpbmdCaWxscy9pbmRleGVzL18QARoMCghpc0FjdGl2ZRABGgoKBnVzZXJJZBABGgsKB2R1ZURhdGUQARoMCghfX25hbWVfXxAB]
+ LOG  [analytics] setaside_reco_seen {}
+ ERROR  Error getting recurring bills: [FirebaseError: The query requires an index. You can create it here: https://console.firebase.google.com/v1/r/project/glidemoney/firestore/indexes?create_composite=ClFwcm9qZWN0cy9nbGlkZW1vbmV5L2RhdGFiYXNlcy8oZGVmYXVsdCkvY29sbGVjdGlvbkdyb3Vwcy9yZWN1cnJpbmdCaWxscy9pbmRleGVzL18QARoMCghpc0FjdGl2ZRABGgoKBnVzZXJJZBABGgsKB2R1ZURhdGUQARoMCghfX25hbWVfXxAB]
+iOS ./index.ts ░░░░░░░░░░░░░░░░  0.0% (0/1)
+iOS Bundled 61ms index.ts (1 module)
+ WARN  [2025-09-04T05:46:14.253Z]  @firebase/auth: Auth (12.2.0): 
+You are initializing Firebase Auth for React Native without providing
+AsyncStorage. Auth state will default to memory persistence and will not
+persist between sessions. In order to persist auth state, install the package
+"@react-native-async-storage/async-storage" and provide it to
+initializeAuth:
+
+import { initializeAuth, getReactNativePersistence } from 'firebase/auth';
+import ReactNativeAsyncStorage from '@react-native-async-storage/async-storage';
+const auth = initializeAuth(app, {
+  persistence: getReactNativePersistence(ReactNativeAsyncStorage)
+});
+ LOG  Attempting authentication... {"email": "test002@email.com", "isSignUp": false}
+ LOG  Sign in successful: b1OORb8UvzX4Qc7hv5AO8yzWgXP2
+ LOG  [analytics] setaside_reco_seen {}
+ ERROR  Error getting recurring bills: [FirebaseError: The query requires an index. You can create it here: https://console.firebase.google.com/v1/r/project/glidemoney/firestore/indexes?create_composite=ClFwcm9qZWN0cy9nbGlkZW1vbmV5L2RhdGFiYXNlcy8oZGVmYXVsdCkvY29sbGVjdGlvbkdyb3Vwcy9yZWN1cnJpbmdCaWxscy9pbmRleGVzL18QARoMCghpc0FjdGl2ZRABGgoKBnVzZXJJZBABGgsKB2R1ZURhdGUQARoMCghfX25hbWVfXxAB]
