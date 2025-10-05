@@ -308,11 +308,11 @@ export const saveRecurringBill = async (bill: Partial<RecurringBill>): Promise<s
  */
 export const getUserRecurringBills = async (userId: string): Promise<RecurringBill[]> => {
   try {
+    // Temporary fix: Remove orderBy to avoid index requirement
     const q = query(
       collection(db, 'recurringBills'),
       where('userId', '==', userId),
-      where('isActive', '==', true),
-      orderBy('dueDate', 'asc')
+      where('isActive', '==', true)
     )
     
     const querySnapshot = await getDocs(q)
@@ -325,7 +325,12 @@ export const getUserRecurringBills = async (userId: string): Promise<RecurringBi
       } as RecurringBill)
     })
     
-    return bills
+    // Sort by dueDate in JavaScript since we removed orderBy from query
+    return bills.sort((a, b) => {
+      const dateA = a.dueDate?.toDate ? a.dueDate.toDate() : new Date(a.dueDate)
+      const dateB = b.dueDate?.toDate ? b.dueDate.toDate() : new Date(b.dueDate)
+      return dateA.getTime() - dateB.getTime()
+    })
   } catch (error) {
     console.error('Error getting recurring bills:', error)
     throw error

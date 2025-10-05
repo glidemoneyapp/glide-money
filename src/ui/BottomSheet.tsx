@@ -1,32 +1,53 @@
 import React from 'react'
-import { Modal, View, Text, TouchableOpacity } from 'react-native'
-import { COLORS, SPACING, FONT_SIZES } from '../constants'
+import { Modal, View, Pressable, StyleSheet, Platform } from 'react-native'
 
-export default function BottomSheet({ visible, title, onClose, children }: BottomSheetProps) {
-  if (!visible) return null
+type Props = { 
+  visible: boolean
+  onClose: () => void
+  children: React.ReactNode
+}
 
+export default function BottomSheet({ visible, onClose, children }: Props) {
   return (
-    <Modal visible={visible} transparent animationType="slide" onRequestClose={onClose}>
-      <View style={{ flex: 1, justifyContent: 'flex-end', backgroundColor: 'rgba(0,0,0,0.25)' }}>
-        <View style={{ backgroundColor: COLORS.surface, borderTopLeftRadius: 16, borderTopRightRadius: 16, padding: SPACING.md }}>
-          <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: SPACING.sm }}>
-            <Text style={{ color: COLORS.text, fontSize: FONT_SIZES.lg, fontWeight: '600' }}>{title}</Text>
-            <TouchableOpacity accessibilityRole="button" accessibilityLabel="Close" onPress={onClose}>
-              <Text style={{ color: COLORS.primary, fontSize: FONT_SIZES.md }}>Close</Text>
-            </TouchableOpacity>
-          </View>
-          {children}
-        </View>
+    <Modal 
+      visible={visible} 
+      onRequestClose={onClose} 
+      transparent
+      animationType={Platform.select({ ios: "slide", android: "fade" })}
+    >
+      <Pressable style={styles.backdrop} onPress={onClose} />
+      <View style={styles.sheet}>
+        <View style={styles.handle} />
+        {children}
       </View>
     </Modal>
   )
 }
 
-interface BottomSheetProps {
-  visible: boolean
-  title: string
-  onClose: () => void
-  children?: React.ReactNode
-}
+const styles = StyleSheet.create({
+  backdrop: { 
+    ...StyleSheet.absoluteFillObject, 
+    backgroundColor: "rgba(0,0,0,0.6)" 
+  },
+  sheet: { 
+    position: "absolute", 
+    bottom: 0, 
+    left: 0, 
+    right: 0, 
+    backgroundColor: "#0b0b0b", 
+    borderTopLeftRadius: 24, 
+    borderTopRightRadius: 24, 
+    padding: 16, 
+    maxHeight: "85%" 
+  },
+  handle: { 
+    alignSelf: "center", 
+    width: 48, 
+    height: 4, 
+    borderRadius: 2, 
+    backgroundColor: "rgba(255,255,255,0.2)", 
+    marginBottom: 12 
+  },
+})
 
 

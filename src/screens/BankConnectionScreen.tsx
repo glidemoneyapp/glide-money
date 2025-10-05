@@ -4,7 +4,7 @@
  * for automatic transaction import and categorization
  */
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import {
   View,
   Text,
@@ -13,7 +13,8 @@ import {
   StatusBar,
   TouchableOpacity,
   ScrollView,
-  Alert
+  Alert,
+  Linking
 } from 'react-native'
 import { Ionicons } from '@expo/vector-icons'
 import { useNavigation } from '@react-navigation/native'
@@ -21,6 +22,10 @@ import { useNavigation } from '@react-navigation/native'
 // Import constants and types
 import { COLORS, SPACING, FONT_SIZES, BORDER_RADIUS } from '../constants'
 import { useAuth } from '../contexts/AuthContext'
+import { 
+  fetchPlaidLinkToken,
+  getPlaidConfig
+} from '../services/plaid'
 
 /**
  * Bank connection screen component
@@ -29,6 +34,31 @@ export default function BankConnectionScreen() {
   const navigation = useNavigation()
   const { user } = useAuth()
   const [isConnecting, setIsConnecting] = useState(false)
+  const [linkToken, setLinkToken] = useState<string | null>(null)
+  const [plaidConfig, setPlaidConfig] = useState(getPlaidConfig())
+
+  /**
+   * Initialize Plaid configuration
+   */
+  useEffect(() => {
+    const config = getPlaidConfig()
+    setPlaidConfig(config)
+    
+    if (!config.isReady) {
+      console.warn('Plaid configuration incomplete. Check environment variables.')
+    }
+  }, [])
+
+  // Expo Go fallback: open Plaid Link in a web view (no native SDK)
+  const openPlaidWebLink = async (token: string) => {
+    const url = `https://cdn.plaid.com/link/v2/stable/link.html?isWebview=true&token=${encodeURIComponent(token)}`
+    try {
+      // eslint-disable-next-line no-undef
+      await Linking.openURL?.(url)
+    } catch (e) {
+      Alert.alert('Error', 'Could not open Plaid. Please try again.')
+    }
+  }
 
   /**
    * Handle Plaid bank connection
@@ -39,30 +69,26 @@ export default function BankConnectionScreen() {
       return
     }
 
+    if (!plaidConfig.isReady) {
+      Alert.alert(
+        'Configuration Error',
+        'Plaid integration is not properly configured. Please check your environment variables.'
+      )
+      return
+    }
+
     setIsConnecting(true)
 
     try {
-      // TODO: Implement Plaid Link SDK integration
-      // For now, show a placeholder
-      Alert.alert(
-        'Bank Connection',
-        'Plaid integration is coming soon! This will allow you to:\n\n' +
-        '• Securely connect your bank accounts\n' +
-        '• Automatically import transactions\n' +
-        '• Auto-categorize income and expenses\n' +
-        '• Sync with your gig platforms\n\n' +
-        'For now, continue using manual entry.',
-        [
-          {
-            text: 'Got it',
-            style: 'default'
-          }
-        ]
-      )
+      // Fetch link token
+      const token = await fetchPlaidLinkToken(user.uid)
+      if (!token) throw new Error('Failed to get link token')
+
+      // Expo Go path: open hosted Link flow
+      await openPlaidWebLink(token)
     } catch (error) {
       console.error('Error connecting bank:', error)
       Alert.alert('Error', 'Failed to connect bank account. Please try again.')
-    } finally {
       setIsConnecting(false)
     }
   }
@@ -77,6 +103,8 @@ export default function BankConnectionScreen() {
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="dark-content" backgroundColor={COLORS.background} />
+      
+      {/* Plaid Link rendered via web fallback in Expo Go */}
       
       <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
         {/* Header with Back Button */}
@@ -107,14 +135,24 @@ export default function BankConnectionScreen() {
               Securely connect your bank accounts through Plaid to automatically 
               import and categorize your transactions.
             </Text>
+
+            {/* Configuration Status */}
+            {!plaidConfig.isReady && (
+              <View style={styles.configWarning}>
+                <Ionicons name="warning" size={16} color={COLORS.warning} />
+                <Text style={styles.configWarningText}>
+                  Plaid configuration incomplete. Check environment variables.
+                </Text>
+              </View>
+            )}
             
             <TouchableOpacity
               style={[
                 styles.plaidButton,
-                isConnecting && styles.plaidButtonDisabled
+                (isConnecting || !plaidConfig.isReady) && styles.plaidButtonDisabled
               ]}
               onPress={handlePlaidConnection}
-              disabled={isConnecting}
+              disabled={isConnecting || !plaidConfig.isReady}
             >
               <Ionicons 
                 name={isConnecting ? "hourglass" : "link"} 
@@ -122,7 +160,9 @@ export default function BankConnectionScreen() {
                 color={COLORS.surface} 
               />
               <Text style={styles.plaidButtonText}>
-                {isConnecting ? 'Connecting...' : 'Connect Bank Account'}
+                {isConnecting ? 'Connecting...' : 
+                 !plaidConfig.isReady ? 'Configuration Required' : 
+                 'Connect Bank Account'}
               </Text>
             </TouchableOpacity>
           </View>
@@ -408,5 +448,22 @@ const styles = StyleSheet.create({
     color: COLORS.textSecondary,
     flex: 1,
     lineHeight: 18
+  },
+
+  configWarning: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: COLORS.warning + '15',
+    padding: SPACING.sm,
+    borderRadius: BORDER_RADIUS.sm,
+    marginBottom: SPACING.md,
+    gap: SPACING.sm
+  },
+
+  configWarningText: {
+    fontSize: FONT_SIZES.sm,
+    color: COLORS.warning,
+    flex: 1,
+    lineHeight: 16
   }
 })

@@ -3,17 +3,54 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    // This rule allows anyone with your Firestore database reference to view, edit,
-    // and delete all data in your Firestore database. It is useful for getting
-    // started, but it is configured to expire after 30 days because it
-    // leaves your app open to attackers. At that time, all client
-    // requests to your Firestore database will be denied.
-    //
-    // Make sure to write security rules for your app before that time, or else
-    // all client requests to your Firestore database will be denied until you Update
-    // your rules
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    // Users can read/write only their own profile
+    match /users/{userId} {
+      allow create: if isOwner(userId);
+      allow read, update, delete: if isOwner(userId);
+    }
+
+    // Owner-based collections
+    match /incomeStreams/{docId} {
+      allow create: if isSignedIn() && request.auth.uid == request.resource.data.userId;
+      allow read, update, delete: if isSignedIn() && request.auth.uid == resource.data.userId;
+    }
+
+    match /transactions/{docId} {
+      allow create: if isSignedIn() && request.auth.uid == request.resource.data.userId;
+      allow read, update, delete: if isSignedIn() && request.auth.uid == resource.data.userId;
+    }
+
+    match /weeklySetAsides/{docId} {
+      allow create: if isSignedIn() && request.auth.uid == request.resource.data.userId;
+      allow read, update, delete: if isSignedIn() && request.auth.uid == resource.data.userId;
+    }
+
+    match /recurringBills/{docId} {
+      allow create: if isSignedIn() && request.auth.uid == request.resource.data.userId;
+      allow read, update, delete: if isSignedIn() && request.auth.uid == resource.data.userId;
+    }
+
+    match /cardProfiles/{docId} {
+      allow create: if isSignedIn() && request.auth.uid == request.resource.data.userId;
+      allow read, update, delete: if isSignedIn() && request.auth.uid == resource.data.userId;
+    }
+
+    match /glideGuardPlans/{docId} {
+      allow create: if isSignedIn() && request.auth.uid == request.resource.data.userId;
+      allow read, update, delete: if isSignedIn() && request.auth.uid == resource.data.userId;
+    }
+
+    // Default deny for everything else
     match /{document=**} {
-      allow read, write: if request.time < timestamp.date(2025, 9, 30);
+      allow read, write: if false;
     }
   }
 }

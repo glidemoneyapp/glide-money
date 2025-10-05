@@ -4,8 +4,7 @@
  */
 
 import { initializeApp, getApps } from 'firebase/app'
-import { initializeAuth, getAuth } from 'firebase/auth'
-// Expo SDK 53 RN Firebase uses native persistence by default; remove RN persistence import to fix TS
+import { initializeAuth, getAuth, getReactNativePersistence } from 'firebase/auth'
 import { getFirestore } from 'firebase/firestore'
 import { getStorage } from 'firebase/storage'
 import AsyncStorage from '@react-native-async-storage/async-storage'
@@ -30,7 +29,15 @@ if (getApps().length === 0) {
 }
 
 // Initialize Firebase Auth with AsyncStorage persistence
-const auth = getAuth(app)
+let auth
+try {
+  auth = initializeAuth(app, {
+    persistence: getReactNativePersistence(AsyncStorage)
+  })
+} catch (error) {
+  // If auth is already initialized, get the existing instance
+  auth = getAuth(app)
+}
 
 // Initialize Firebase services
 export const db = getFirestore(app)
