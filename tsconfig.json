@@ -11,5 +11,10 @@
       "@services/*": ["src/services/*"],
       "@config/*": ["src/config/*"]
     }
-  }
+  },
+  "exclude": [
+    "functions/**",
+    "backend/**",
+    "**/node_modules/**"
+  ]
 }
