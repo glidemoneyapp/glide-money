@@ -24,8 +24,17 @@ service cloud.firestore {
     }
 
     match /transactions/{docId} {
-      allow create: if isSignedIn() && request.auth.uid == request.resource.data.userId;
-      allow read, update, delete: if isSignedIn() && request.auth.uid == resource.data.userId;
+      function isOwnerCreate() { return isSignedIn() && request.auth.uid == request.resource.data.userId; }
+      function isOwnerRead() { return isSignedIn() && request.auth.uid == resource.data.userId; }
+      function userIdUnchanged() { return resource == null || request.resource.data.userId == resource.data.userId; }
+      function validFields() {
+        return request.resource.data.diff(resource.data).changedKeys().hasOnly([
+          'userId','bankAccountId','amount','description','date','category','isIncome','incomeStreamId','merchant','createdAt','updatedAt'
+        ]);
+      }
+      allow create: if isOwnerCreate() && validFields();
+      allow read: if isOwnerRead();
+      allow update, delete: if isOwnerRead() && userIdUnchanged() && validFields();
     }
 
     match /weeklySetAsides/{docId} {

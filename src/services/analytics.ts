@@ -14,4 +14,12 @@ export function trackEvent(eventName: string, properties?: Record<string, unknow
   }
 }
 
+export function trackError(name: string, err: unknown, extras?: Record<string, unknown>) {
+  if (!__DEV__) return
+  try {
+    // eslint-disable-next-line no-console
+    console.warn(`[error] ${name}`, err, extras || {})
+  } catch {}
+}
+
 

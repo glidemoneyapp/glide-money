@@ -7,6 +7,7 @@ const express = require('express')
 const cors = require('cors')
 const dotenv = require('dotenv')
 const { Configuration, PlaidApi, PlaidEnvironments } = require('plaid')
+const admin = require('firebase-admin')
 
 // Load environment variables
 dotenv.config()
@@ -17,6 +18,14 @@ const PORT = process.env.PORT || 3001
 // Middleware
 app.use(cors())
 app.use(express.json())
+
+// Initialize Firebase Admin (requires GOOGLE_APPLICATION_CREDENTIALS or default creds)
+try {
+  if (!admin.apps.length) admin.initializeApp()
+} catch (e) {
+  console.warn('Firebase Admin init warning:', e.message)
+}
+const db = admin.apps.length ? admin.firestore() : null
 
 // Plaid Configuration
 const PLAID_CLIENT_ID = process.env.PLAID_CLIENT_ID
@@ -41,15 +50,37 @@ const configuration = new Configuration({
 
 const plaidClient = new PlaidApi(configuration)
 
-// Store access tokens (in production, use a database)
-const accessTokens = new Map()
+// Helper: save/get Plaid access token securely per user
+async function saveAccessToken(uid, accessToken) {
+  if (!db) return
+  await db.collection('userPrivate').doc(uid).set({ plaidAccessToken: accessToken }, { merge: true })
+}
+
+async function getAccessToken(uid) {
+  if (!db) return null
+  const snap = await db.collection('userPrivate').doc(uid).get()
+  return snap.exists ? snap.data().plaidAccessToken : null
+}
+
+// Optional auth middleware verifying Firebase ID token
+async function requireAuth(req, res, next) {
+  try {
+    const authHeader = req.headers.authorization || ''
+    const token = authHeader.startsWith('Bearer ') ? authHeader.slice(7) : null
+    if (!token) return res.status(401).json({ error: 'Missing auth token' })
+    req.user = await admin.auth().verifyIdToken(token)
+    next()
+  } catch (e) {
+    res.status(401).json({ error: 'Invalid auth token' })
+  }
+}
 
 /**
  * Create Link Token endpoint
  */
 app.post('/api/plaid/create-link-token', async (req, res) => {
   try {
-    const { user_id, environment } = req.body
+    const { user_id } = req.body
 
     if (!user_id) {
       return res.status(400).json({ error: 'user_id is required' })
@@ -62,8 +93,7 @@ app.post('/api/plaid/create-link-token', async (req, res) => {
       client_name: 'GlideMoney',
       products: ['transactions', 'auth'],
       country_codes: ['US'],
-      language: 'en',
-      webhook: 'https://your-webhook-url.com/plaid/webhook',
+      language: 'en'
     }
 
     const response = await plaidClient.linkTokenCreate(linkTokenRequest)
@@ -92,18 +122,10 @@ app.post('/api/plaid/exchange-token', async (req, res) => {
       return res.status(400).json({ error: 'public_token is required' })
     }
 
-    const exchangeRequest = {
-      public_token: public_token,
-    }
-
-    const response = await plaidClient.itemPublicTokenExchange(exchangeRequest)
-    
-    // Store access token (in production, save to database with user_id)
+    const response = await plaidClient.itemPublicTokenExchange({ public_token })
     const accessToken = response.data.access_token
-    accessTokens.set(accessToken, {
-      item_id: response.data.item_id,
-      created_at: new Date(),
-    })
+    const uid = req.user?.uid || req.body.user_id || 'anon'
+    await saveAccessToken(uid, accessToken)
 
     res.json({
       access_token: accessToken,
@@ -123,14 +145,12 @@ app.post('/api/plaid/exchange-token', async (req, res) => {
  */
 app.post('/api/plaid/transactions', async (req, res) => {
   try {
-    const { access_token, start_date, end_date } = req.body
-
-    if (!access_token) {
-      return res.status(400).json({ error: 'access_token is required' })
-    }
+    const { access_token, start_date, end_date, user_id } = req.body
+    const token = access_token || (await getAccessToken(user_id))
+    if (!token) return res.status(400).json({ error: 'access_token is required' })
 
     const transactionsRequest = {
-      access_token: access_token,
+      access_token: token,
       start_date: start_date || '2020-01-01',
       end_date: end_date || new Date().toISOString().split('T')[0],
     }

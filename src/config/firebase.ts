@@ -5,7 +5,7 @@
 
 import { initializeApp, getApps } from 'firebase/app'
 import { initializeAuth, getAuth, getReactNativePersistence } from 'firebase/auth'
-import { getFirestore } from 'firebase/firestore'
+import { initializeFirestore, persistentLocalCache } from 'firebase/firestore'
 import { getStorage } from 'firebase/storage'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 
@@ -39,7 +39,7 @@ try {
 }
 
 // Initialize Firebase services
-export const db = getFirestore(app)
+export const db = initializeFirestore(app, { localCache: persistentLocalCache() })
 export const storage = getStorage(app)
 
 // Export the auth instance and app
