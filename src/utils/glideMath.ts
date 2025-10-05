@@ -84,3 +84,8 @@ export const getCardStatus = (card: GlideCard): "OK" | "PAY" | "URGENT" => {
   if (days <= 1) return "URGENT";
   return "PAY";
 };
+
+/** Format currency consistently in CAD */
+export function fmtCAD(value: number): string {
+  return new Intl.NumberFormat('en-CA', { style: 'currency', currency: 'CAD' }).format(value)
+}

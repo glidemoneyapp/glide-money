@@ -35,7 +35,7 @@ export interface PlaidLinkSuccessResponse {
 /**
  * Fetch Plaid Link token from backend
  */
-export async function fetchPlaidLinkToken(userId?: string): Promise<string | null> {
+export async function fetchPlaidLinkToken(userId?: string, idToken?: string): Promise<string | null> {
   if (!PLAID_CONFIG.backendBaseUrl) {
     console.error('Missing EXPO_PUBLIC_BACKEND_BASE_URL')
     return null
@@ -44,9 +44,7 @@ export async function fetchPlaidLinkToken(userId?: string): Promise<string | nul
   try {
     const response = await fetch(`${PLAID_CONFIG.backendBaseUrl}/api/plaid/create-link-token`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      headers: { 'Content-Type': 'application/json', ...(idToken ? { Authorization: `Bearer ${idToken}` } : {}) },
       body: JSON.stringify({
         user_id: userId || 'anonymous_user',
       }),
@@ -68,13 +66,11 @@ export async function fetchPlaidLinkToken(userId?: string): Promise<string | nul
 /**
  * Exchange public token for access token
  */
-export async function exchangePublicToken(publicToken: string): Promise<boolean> {
+export async function exchangePublicToken(publicToken: string, idToken?: string): Promise<boolean> {
   try {
     const response = await fetch(`${getBackendBaseUrl()}/api/plaid/exchange-token`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      headers: { 'Content-Type': 'application/json', ...(idToken ? { Authorization: `Bearer ${idToken}` } : {}) },
       body: JSON.stringify({
         public_token: publicToken,
       }),

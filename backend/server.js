@@ -78,7 +78,7 @@ async function requireAuth(req, res, next) {
 /**
  * Create Link Token endpoint
  */
-app.post('/api/plaid/create-link-token', async (req, res) => {
+app.post('/api/plaid/create-link-token', requireAuth, async (req, res) => {
   try {
     const { user_id } = req.body
 
@@ -114,7 +114,7 @@ app.post('/api/plaid/create-link-token', async (req, res) => {
 /**
  * Exchange Public Token endpoint
  */
-app.post('/api/plaid/exchange-token', async (req, res) => {
+app.post('/api/plaid/exchange-token', requireAuth, async (req, res) => {
   try {
     const { public_token } = req.body
 
@@ -124,8 +124,7 @@ app.post('/api/plaid/exchange-token', async (req, res) => {
 
     const response = await plaidClient.itemPublicTokenExchange({ public_token })
     const accessToken = response.data.access_token
-    const uid = req.user?.uid || req.body.user_id || 'anon'
-    await saveAccessToken(uid, accessToken)
+    await saveAccessToken(req.user.uid, accessToken)
 
     res.json({
       access_token: accessToken,

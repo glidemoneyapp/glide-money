@@ -5,6 +5,7 @@
 
 import React from 'react'
 import { NavigationContainer } from '@react-navigation/native'
+import { linking } from './linking'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import { createStackNavigator } from '@react-navigation/stack'
 import { Ionicons } from '@expo/vector-icons'
@@ -153,7 +154,7 @@ function IncomeStackNavigator() {
 /**
  * Main app navigator that handles authentication flow
  */
-export default function AppNavigator() {
+export default function AppNavigator(props: { linking?: any }) {
   const { isAuthenticated, isLoading, userProfile } = useAuth()
 
   // Show loading screen while checking authentication
@@ -162,7 +163,7 @@ export default function AppNavigator() {
   }
 
   return (
-    <NavigationContainer>
+    <NavigationContainer linking={props.linking ?? linking}>
       <Stack.Navigator screenOptions={{ headerShown: false }}>
         {isAuthenticated ? (
           // User is authenticated, check if they need onboarding
