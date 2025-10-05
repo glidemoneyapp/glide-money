@@ -16,5 +16,12 @@
     "functions/**",
     "backend/**",
     "**/node_modules/**"
+  ],
+  "include": [
+    "App.tsx",
+    "app.json",
+    "index.ts",
+    "index.tsx",
+    "src/**/*"
   ]
 }
