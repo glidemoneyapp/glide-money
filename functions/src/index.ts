@@ -10,6 +10,7 @@
 import {setGlobalOptions} from "firebase-functions";
 import {onRequest} from "firebase-functions/https";
 import * as logger from "firebase-functions/logger";
+import { Configuration, PlaidApi } from "plaid";
 
 // Start writing functions
 // https://firebase.google.com/docs/functions/typescript
@@ -26,7 +27,28 @@ import * as logger from "firebase-functions/logger";
 // this will be the maximum concurrent request count.
 setGlobalOptions({ maxInstances: 10 });
 
-// export const helloWorld = onRequest((request, response) => {
-//   logger.info("Hello logs!", {structuredData: true});
-//   response.send("Hello from Firebase!");
-// });
+const plaid = new PlaidApi(new Configuration({
+  basePath: "https://sandbox.plaid.com",
+  baseOptions: {
+    headers: {
+      "PLAID-CLIENT-ID": process.env.PLAID_CLIENT_ID as string,
+      "PLAID-SECRET": process.env.PLAID_SECRET as string,
+    },
+  },
+}));
+
+export const createLinkToken = onRequest(async (_req, res) => {
+  try {
+    const r = await plaid.linkTokenCreate({
+      user: { client_user_id: "uid-placeholder" },
+      client_name: "GlideMoney",
+      products: ["transactions"],
+      country_codes: ["CA", "US"],
+      language: "en",
+    });
+    res.json({ link_token: r.data.link_token });
+  } catch (e: any) {
+    logger.error("createLinkToken", e);
+    res.status(500).json({ error: "FAILED" });
+  }
+});
