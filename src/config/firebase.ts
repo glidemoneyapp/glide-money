@@ -9,15 +9,14 @@ import { getFirestore } from 'firebase/firestore'
 import { getStorage } from 'firebase/storage'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 
-// Your Firebase configuration
+// Firebase configuration from env (public in client, non-secret)
 const firebaseConfig = {
-  apiKey: "AIzaSyBkXIOSRImmHqRIZliYjq0sT-RbuAsJ-_s",
-  authDomain: "glidemoney.firebaseapp.com",
-  projectId: "glidemoney",
-  storageBucket: "glidemoney.firebasestorage.app",
-  messagingSenderId: "169072570567",
-  appId: "1:169072570567:web:3f0cb2d58cbdc21ec1cee2",
-  measurementId: "G-M4P8THLQQP"
+  apiKey: process.env.EXPO_PUBLIC_FIREBASE_API_KEY as string,
+  authDomain: process.env.EXPO_PUBLIC_FIREBASE_AUTH_DOMAIN as string,
+  projectId: process.env.EXPO_PUBLIC_FIREBASE_PROJECT_ID as string,
+  storageBucket: process.env.EXPO_PUBLIC_FIREBASE_STORAGE_BUCKET as string,
+  messagingSenderId: process.env.EXPO_PUBLIC_FIREBASE_MESSAGING_SENDER_ID as string,
+  appId: process.env.EXPO_PUBLIC_FIREBASE_APP_ID as string
 }
 
 // Initialize Firebase app only if not already initialized

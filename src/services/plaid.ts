@@ -3,11 +3,8 @@
  * Handles Plaid Link token generation and bank connection flows
  */
 
-// Plaid configuration
+// Client must never include Plaid secrets. Backend brokers all Plaid calls.
 export const PLAID_CONFIG = {
-  clientId: process.env.EXPO_PUBLIC_PLAID_CLIENT_ID || '',
-  environment: process.env.EXPO_PUBLIC_PLAID_ENVIRONMENT || 'sandbox',
-  linkTokenEndpoint: process.env.EXPO_PUBLIC_PLAID_LINK_TOKEN_ENDPOINT || '',
   backendBaseUrl: process.env.EXPO_PUBLIC_BACKEND_BASE_URL || ''
 }
 
@@ -39,20 +36,19 @@ export interface PlaidLinkSuccessResponse {
  * Fetch Plaid Link token from backend
  */
 export async function fetchPlaidLinkToken(userId?: string): Promise<string | null> {
-  if (!PLAID_CONFIG.linkTokenEndpoint) {
-    console.error('Plaid Link Token endpoint not configured')
+  if (!PLAID_CONFIG.backendBaseUrl) {
+    console.error('Missing EXPO_PUBLIC_BACKEND_BASE_URL')
     return null
   }
 
   try {
-    const response = await fetch(PLAID_CONFIG.linkTokenEndpoint, {
+    const response = await fetch(`${PLAID_CONFIG.backendBaseUrl}/api/plaid/create-link-token`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
         user_id: userId || 'anonymous_user',
-        environment: PLAID_CONFIG.environment,
       }),
     })
 
@@ -95,24 +91,14 @@ export async function exchangePublicToken(publicToken: string): Promise<boolean>
  * Get Plaid configuration for Link SDK
  */
 export function getPlaidConfig() {
-  return {
-    clientId: PLAID_CONFIG.clientId,
-    environment: PLAID_CONFIG.environment,
-    isReady: !!PLAID_CONFIG.clientId && !!PLAID_CONFIG.linkTokenEndpoint,
-  }
+  return { isReady: !!PLAID_CONFIG.backendBaseUrl }
 }
 
 /**
  * Resolve backend base URL from config
  */
 function getBackendBaseUrl(): string {
-  if (PLAID_CONFIG.backendBaseUrl) return PLAID_CONFIG.backendBaseUrl
-  try {
-    const url = new URL(PLAID_CONFIG.linkTokenEndpoint)
-    return `${url.protocol}//${url.hostname}${url.port ? `:${url.port}` : ''}`
-  } catch {
-    return ''
-  }
+  return PLAID_CONFIG.backendBaseUrl
 }
 
 

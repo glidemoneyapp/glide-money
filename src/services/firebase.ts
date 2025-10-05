@@ -27,7 +27,8 @@ import {
   getDocs,
   onSnapshot,
   DocumentData,
-  QuerySnapshot
+  QuerySnapshot,
+  serverTimestamp
 } from 'firebase/firestore'
 
 import { auth, db } from '../config/firebase'
@@ -101,7 +102,8 @@ export const saveUserProfile = async (userId: string, profile: Partial<UserProfi
     const userRef = doc(db, 'users', userId)
     await setDoc(userRef, {
       ...profile,
-      updatedAt: new Date()
+      updatedAt: serverTimestamp(),
+      createdAt: (await getDoc(userRef)).exists() ? undefined : serverTimestamp()
     }, { merge: true })
   } catch (error) {
     console.error('Error saving user profile:', error)
@@ -138,8 +140,8 @@ export const saveIncomeStream = async (incomeStream: Partial<IncomeStream>): Pro
   try {
     const docRef = await addDoc(collection(db, 'incomeStreams'), {
       ...incomeStream,
-      createdAt: new Date(),
-      updatedAt: new Date()
+      createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp()
     })
     return docRef.id
   } catch (error) {
@@ -187,7 +189,7 @@ export const saveTransaction = async (transaction: Partial<Transaction>): Promis
   try {
     const docRef = await addDoc(collection(db, 'transactions'), {
       ...transaction,
-      createdAt: new Date()
+      createdAt: serverTimestamp()
     })
     return docRef.id
   } catch (error) {
@@ -244,8 +246,8 @@ export const saveWeeklySetAside = async (setAside: Partial<WeeklySetAside>): Pro
   try {
     const docRef = await addDoc(collection(db, 'weeklySetAsides'), {
       ...setAside,
-      createdAt: new Date(),
-      updatedAt: new Date()
+      createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp()
     })
     return docRef.id
   } catch (error) {
@@ -293,8 +295,8 @@ export const saveRecurringBill = async (bill: Partial<RecurringBill>): Promise<s
   try {
     const docRef = await addDoc(collection(db, 'recurringBills'), {
       ...bill,
-      createdAt: new Date(),
-      updatedAt: new Date()
+      createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp()
     })
     return docRef.id
   } catch (error) {
@@ -345,8 +347,8 @@ export const saveCardProfile = async (card: Partial<CardProfile>): Promise<strin
   try {
     const docRef = await addDoc(collection(db, 'cardProfiles'), {
       ...card,
-      createdAt: new Date(),
-      updatedAt: new Date()
+      createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp()
     })
     return docRef.id
   } catch (error) {
@@ -376,8 +378,8 @@ export const saveGlideGuardPlan = async (plan: Partial<GlideGuardPlan>): Promise
   try {
     const docRef = await addDoc(collection(db, 'glideGuardPlans'), {
       ...plan,
-      createdAt: new Date(),
-      updatedAt: new Date()
+      createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp()
     })
     return docRef.id
   } catch (error) {
