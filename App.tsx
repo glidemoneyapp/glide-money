@@ -5,6 +5,8 @@
 
 import React from 'react'
 import { StatusBar } from 'expo-status-bar'
+import { SafeAreaProvider } from 'react-native-safe-area-context'
+import { ErrorBoundary } from './src/ui/ErrorBoundary'
 
 // Import our navigation and auth provider
 import AppNavigator from './src/navigation/AppNavigator'
@@ -17,9 +19,12 @@ import { AuthProvider } from './src/contexts/AuthContext'
 export default function App() {
   return (
     <AuthProvider>
-      <StatusBar style="auto" />
-      {/* Navigation linking support */}
-      <AppNavigator linking={linking as any} />
+      <SafeAreaProvider>
+        <ErrorBoundary>
+          <StatusBar style="auto" />
+          <AppNavigator linking={linking as any} />
+        </ErrorBoundary>
+      </SafeAreaProvider>
     </AuthProvider>
   )
 }
