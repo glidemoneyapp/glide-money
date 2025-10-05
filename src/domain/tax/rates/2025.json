@@ -1,0 +1,29 @@
+{
+  "province": "ON",
+  "hstRate": 0.13,
+  "cpp": {
+    "rate": 0.0595,
+    "ympe": 68800,
+    "basicExemption": 3500
+  },
+  "federal": [
+    { "upTo": 55867, "rate": 0.15 },
+    { "upTo": 111733, "rate": 0.205 },
+    { "upTo": 173205, "rate": 0.26 },
+    { "upTo": 246752, "rate": 0.29 },
+    { "upTo": null, "rate": 0.33 }
+  ],
+  "ontario": [
+    { "upTo": 51746, "rate": 0.0505 },
+    { "upTo": 103492, "rate": 0.0915 },
+    { "upTo": 150000, "rate": 0.1116 },
+    { "upTo": 220000, "rate": 0.1216 },
+    { "upTo": null, "rate": 0.1316 }
+  ],
+  "basicCredits": {
+    "federal": 15000,
+    "ontario": 12398
+  }
+}
+
+

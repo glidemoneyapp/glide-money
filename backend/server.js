@@ -8,6 +8,7 @@ const cors = require('cors')
 const dotenv = require('dotenv')
 const { Configuration, PlaidApi, PlaidEnvironments } = require('plaid')
 const admin = require('firebase-admin')
+const { validate, NewBillSchema } = require('./validators')
 
 // Load environment variables
 dotenv.config()
@@ -196,6 +197,26 @@ app.post('/api/plaid/accounts', async (req, res) => {
       error: 'Failed to fetch accounts',
       details: error.message 
     })
+  }
+})
+
+// Bills idempotent upsert
+app.post('/api/bills/upsert', requireAuth, validate(NewBillSchema), async (req, res) => {
+  try {
+    const { name, amount, dueDay, category, clientRequestId } = req.body
+    const uid = req.user.uid
+    const billsCol = db.collection('bills')
+    const q = await billsCol.where('userId', '==', uid).where('clientRequestId', '==', clientRequestId).limit(1).get()
+    if (!q.empty) {
+      const doc = q.docs[0]
+      await doc.ref.update({ name, amount, dueDay, category, updatedAt: admin.firestore.FieldValue.serverTimestamp() })
+      return res.json({ id: doc.id, status: 'updated' })
+    }
+    const docRef = await billsCol.add({ userId: uid, clientRequestId, name, amount, dueDay, category, createdAt: admin.firestore.FieldValue.serverTimestamp(), updatedAt: admin.firestore.FieldValue.serverTimestamp() })
+    res.json({ id: docRef.id, status: 'created' })
+  } catch (e) {
+    console.error(e)
+    res.status(500).json({ error: 'SERVER_ERROR' })
   }
 })
 
