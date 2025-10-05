@@ -3,12 +3,15 @@ on: [push, pull_request]
 jobs:
   build-test:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: glidemoney/glidemoney
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with: { node-version: 20, cache: 'npm' }
       - run: npm ci || npm install --no-audit --no-fund
-      - run: npx tsc --noEmit
+      - run: npx tsc -p tsconfig.json --noEmit
       - run: npm run test --if-present
       - run: npm run -s typecheck || true
       - run: npm run -s lint || true
